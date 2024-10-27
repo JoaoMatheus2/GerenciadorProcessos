@@ -103,7 +103,7 @@
     window.onload = function () {
       const ufSelecionada = "@Model.UF";
       if (ufSelecionada) {
-        carregarMunicipios(ufSelecionada, "@Model.Municipio");
+        carregarMunicipios(ufSelecionada, "@Html.Raw(Model.Municipio)");
       }
     };
 
