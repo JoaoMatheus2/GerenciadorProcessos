@@ -1,0 +1,88 @@
+﻿@model ProcessoModel
+@{
+  ViewData["Title"] = "Detalhe de Processo";
+}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="text-center">
+  <h1 class="display-4">Cadastro de Processos</h1>
+</div>
+
+<form>
+  <fieldset disabled>
+    <div class="form-row">
+      <div class="form-group col-md-2">
+        <label for="codigo">Código</label>
+        <input type="text" asp-for="Codigo" class="form-control" readonly>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="nome">Nome do Processo</label>
+        <input type="text" asp-for="NomeProcesso" class="form-control" placeholder="Digite o Nome do Processo">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="npu">NPU</label>
+        <input type="text" asp-for="NPU" class="form-control"
+               placeholder="Digite o NPU"
+               name="npu"
+               maxlength="25"
+               oninput="formatNPU(this)"
+               title="Formato: 1111111-11.1111.1.11.1111"
+               pattern="^\d{7}-\d{2}\.\d{4}\.\d{1}\.\d{2}\.\d{4}$"
+               required />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="dataCadastro">Data Cadastro</label>
+        <input type="text" asp-for="DataCadastro" class="form-control" readonly>
+      </div>
+
+      <div class="form-group col-md-3">
+        <label for="dataVisualizacao">Data Visualização</label>
+        <input type="text" asp-for="DataVisualizacao" class="form-control" readonly>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="uf">Estado (UF)</label>
+        <select class="form-control" id="uf" asp-for="UF" onchange="carregarMunicipios(this.value)">
+          <option value="">Selecione a UF</option>
+          <option value="AC">Acre (AC)</option>
+          <option value="AL">Alagoas (AL)</option>
+          <option value="AP">Amapá (AP)</option>
+          <option value="AM">Amazonas (AM)</option>
+          <option value="BA">Bahia (BA)</option>
+          <option value="CE">Ceará (CE)</option>
+          <option value="DF">Distrito Federal (DF)</option>
+          <option value="ES">Espírito Santo (ES)</option>
+          <option value="GO">Goiás (GO)</option>
+          <option value="MA">Maranhão (MA)</option>
+          <option value="MT">Mato Grosso (MT)</option>
+          <option value="MS">Mato Grosso do Sul (MS)</option>
+          <option value="MG">Minas Gerais (MG)</option>
+          <option value="PA">Pará (PA)</option>
+          <option value="PB">Paraíba (PB)</option>
+          <option value="PR">Paraná (PR)</option>
+          <option value="PE">Pernambuco (PE)</option>
+          <option value="PI">Piauí (PI)</option>
+          <option value="RJ">Rio de Janeiro (RJ)</option>
+          <option value="RN">Rio Grande do Norte (RN)</option>
+          <option value="RS">Rio Grande do Sul (RS)</option>
+          <option value="RO">Rondônia (RO)</option>
+          <option value="RR">Roraima (RR)</option>
+          <option value="SC">Santa Catarina (SC)</option>
+          <option value="SP">São Paulo (SP)</option>
+          <option value="SE">Sergipe (SE)</option>
+          <option value="TO">Tocantins (TO)</option>
+        </select>
+
+      </div>
+      <div class="form-group col-md-3">
+        <label for="municipio">Município</label>
+        <input type="text" asp-for="Municipio" class="form-control" readonly />
+      </div>
+    </div>
+
+  </fieldset>
+  <a class="btn btn-secondary" asp-controller="Processos" asp-action="Index" role="button">Voltar</a>
+
+</form>

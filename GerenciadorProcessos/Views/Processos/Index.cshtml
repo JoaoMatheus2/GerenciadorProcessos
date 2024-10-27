@@ -1,0 +1,87 @@
+﻿@model List<ProcessoModel>
+@{
+  ViewData["Title"] = "Listagem de Processos";
+}
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<div class="text-center">
+  <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+    <a class="btn btn-primary" role="button" asp-controller="Processos" asp-action="Criar">Adicionar Novo Processo</a>
+  </div>
+  <br />
+  <h1 class="display-4">Listagem de Processos</h1>
+
+  <table class="table" id="table-processos">
+    <thead>
+      <tr>
+        <th scope="col">Código</th>
+        <th scope="col">NPU</th>
+        <th scope="col">Data Cadastro</th>
+        <th scope="col">UF</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (Model != null && Model.Any())
+      {
+        foreach (var item in Model)
+        {
+          <tr>
+            <th scope="row">@item.Codigo</th>
+            <td>@item.NPU</td>
+            <td>@item.DataCadastro.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@item.UF</td>
+            <td>
+              <div class="btn-group" role="group">
+                <a role="button" class="btn btn-primary" asp-controller="Processos" asp-action="Detalhar" asp-route-codigo="@item.Codigo">Detalhar</a>
+                <a role="button" class="btn btn-warning" asp-controller="Processos" asp-action="Editar" asp-route-codigo="@item.Codigo">Editar</a>
+                <a role="button" class="btn btn-danger" onclick="openModal('@item.Codigo')">Excluir</a>
+              </div>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+        <button type="button" class="close" data-bs-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Você tem certeza que deseja excluir este processo?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentId;
+
+  function openModal(id) {
+    currentId = id; // Armazena o ID do processo que será excluído
+    $('#confirmDeleteModal').modal('show'); // Mostra o modal
+  }
+
+  $(document).ready(function () {
+    $('#confirmDeleteBtn').click(function () {
+      // Redireciona para a ação Excluir passando o ID do processo
+      window.location.href = '@Url.Action("Excluir", "Processos")/' + currentId;
+    });
+  });
+</script>

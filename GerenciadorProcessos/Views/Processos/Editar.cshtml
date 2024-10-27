@@ -1,0 +1,208 @@
+﻿  @model ProcessoModel
+  @{
+    ViewData["Title"] = "Editar Processo";
+  }
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <div class="text-center">
+    <h1 class="display-4">Edição de Processos</h1>
+  </div>
+
+  <form asp-controller="Processos" asp-action="Alterar" method="post">
+    <div class="form-row">
+      <div class="form-group col-md-2">
+        <label for="codigo">Código</label>
+        <input type="text" asp-for="Codigo" class="form-control" readonly>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="nome">Nome do Processo</label>
+        <input type="text" asp-for="NomeProcesso" class="form-control" placeholder="Digite o Nome do Processo">
+              @Html.ValidationMessageFor(x => x.NomeProcesso)
+
+      </div>
+    <div class="form-group col-md-4">
+      <label for="npu">NPU</label>
+      <input type="text" asp-for="NPU" class="form-control"
+             placeholder="Digite o NPU"
+             name="npu"
+             maxlength="25"
+             oninput="formatNPU(this)"
+             title="Formato: 1111111-11.1111.1.11.1111"
+             pattern="^\d{7}-\d{2}\.\d{4}\.\d{1}\.\d{2}\.\d{4}$"
+             required />
+      @Html.ValidationMessageFor(x => x.NPU, "", new { @class = "text-danger" })
+    </div>
+  </div>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="dataCadastro">Data Cadastro</label>
+        <input type="text" asp-for="DataCadastro" class="form-control" readonly>
+      </div>
+
+      <div class="form-group col-md-3">
+        <label for="dataVisualizacao">Data Visualização</label>
+        <input type="text" asp-for="DataVisualizacao" class="form-control" readonly>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="uf">Estado (UF)</label>
+      <select class="form-control" id="uf" asp-for="UF" onchange="carregarMunicipios(this.value)">
+        <option value="">Selecione a UF</option>
+          <option value="AC">Acre (AC)</option>
+          <option value="AL">Alagoas (AL)</option>
+          <option value="AP">Amapá (AP)</option>
+          <option value="AM">Amazonas (AM)</option>
+          <option value="BA">Bahia (BA)</option>
+          <option value="CE">Ceará (CE)</option>
+          <option value="DF">Distrito Federal (DF)</option>
+          <option value="ES">Espírito Santo (ES)</option>
+          <option value="GO">Goiás (GO)</option>
+          <option value="MA">Maranhão (MA)</option>
+          <option value="MT">Mato Grosso (MT)</option>
+          <option value="MS">Mato Grosso do Sul (MS)</option>
+          <option value="MG">Minas Gerais (MG)</option>
+          <option value="PA">Pará (PA)</option>
+          <option value="PB">Paraíba (PB)</option>
+          <option value="PR">Paraná (PR)</option>
+          <option value="PE">Pernambuco (PE)</option>
+          <option value="PI">Piauí (PI)</option>
+          <option value="RJ">Rio de Janeiro (RJ)</option>
+          <option value="RN">Rio Grande do Norte (RN)</option>
+          <option value="RS">Rio Grande do Sul (RS)</option>
+          <option value="RO">Rondônia (RO)</option>
+          <option value="RR">Roraima (RR)</option>
+          <option value="SC">Santa Catarina (SC)</option>
+          <option value="SP">São Paulo (SP)</option>
+          <option value="SE">Sergipe (SE)</option>
+          <option value="TO">Tocantins (TO)</option>
+        </select>
+        @Html.ValidationMessageFor(x => x.UF)
+
+      </div>
+      <div class="form-group col-md-3">
+        <label for="municipio">Município</label>
+        <select id="municipio" asp-for="Municipio" class="form-control">
+          <option value="">Selecione o Município</option>
+        </select>
+        @Html.ValidationMessageFor(x => x.Municipio)
+
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: center; gap: 10px;">
+      <button type="submit" class="btn btn-primary">Alterar</button>
+      <a class="btn btn-secondary" asp-controller="Processos" asp-action="Index" role="button">Voltar</a>
+
+      <input type="hidden" name="codigo" value="@Model.Codigo" />
+      <input type="submit" formaction="@Url.Action("ConfirmarVisualizacao", "Processos")" class="btn btn-info" @(Model.DataVisualizacao != null ? "disabled" : "") value="Confirmação de Visualização" />
+    </div>
+  </form>
+
+@section Scripts {
+  <script>
+    // Carrega os municípios quando a página for carregada
+    window.onload = function () {
+      const ufSelecionada = "@Model.UF";
+      if (ufSelecionada) {
+        carregarMunicipios(ufSelecionada, "@Model.Municipio");
+      }
+    };
+
+    function carregarMunicipios(uf, municipioSelecionado = null) {
+      var municipioDropdown = document.getElementById("municipio");
+
+      // Limpa as opções anteriores
+      municipioDropdown.innerHTML = '<option value="">Selecione o Município</option>';
+
+      if (uf) {
+        console.log(`Buscando municípios para a UF: ${uf}`); // Log para depuração
+
+        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log(`Municípios encontrados:`, data); // Log para depuração
+
+            data.forEach(municipio => {
+              var option = document.createElement("option");
+              option.value = municipio.nome; // Define o nome do município como valor
+              option.text = municipio.nome; // Define o nome do município como texto exibido
+
+              // Se estiver carregando os municípios ao abrir a página, verifica se é o selecionado
+              if (municipio.nome === municipioSelecionado) {
+                option.selected = true;
+              }
+
+              municipioDropdown.appendChild(option);
+            });
+
+            if (data.length === 0) {
+              console.warn('Nenhum município encontrado para esta UF.'); // Log de advertência
+            }
+          })
+          .catch(error => {
+            console.error('Erro ao carregar municípios:', error);
+          });
+      }
+    }
+  </script>
+  <script>
+    function formatNPU(input) {
+      // Remove tudo que não for número
+      let value = input.value.replace(/[^0-9]/g, '');
+
+      // Limita o tamanho máximo a 20 dígitos (sem os símbolos de formatação)
+      if (value.length > 20) {
+        value = value.slice(0, 20);
+      }
+
+      // Aplica a formatação correta: 1111111-11.1111.1.11.1111
+      let formattedValue = '';
+
+      if (value.length > 0) {
+        formattedValue += value.slice(0, 7); // Primeiros 7 dígitos
+        if (value.length >= 7) {
+          formattedValue += '-';
+        }
+      }
+
+      if (value.length > 7) {
+        formattedValue += value.slice(7, 9); // Próximos 2 dígitos
+        if (value.length >= 9) {
+          formattedValue += '.';
+        }
+      }
+
+      if (value.length > 9) {
+        formattedValue += value.slice(9, 13); // Próximos 4 dígitos
+        if (value.length >= 13) {
+          formattedValue += '.';
+        }
+      }
+
+      if (value.length > 13) {
+        formattedValue += value.slice(13, 14); // Próximo 1 dígito
+        if (value.length >= 14) {
+          formattedValue += '.';
+        }
+      }
+
+      if (value.length > 14) {
+        formattedValue += value.slice(14, 16); // Próximos 2 dígitos
+        if (value.length >= 16) {
+          formattedValue += '.';
+        }
+      }
+
+      if (value.length > 16) {
+        formattedValue += value.slice(16); // Próximos 4 dígitos
+      }
+
+      // Atualiza o campo de entrada com o valor formatado
+      input.value = formattedValue;
+    }
+  </script>
+}
