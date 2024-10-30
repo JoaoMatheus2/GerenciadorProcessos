@@ -1,29 +1,37 @@
 # Sistema de Gerenciamento de Processos
 
-Este é um sistema de gerenciamento de processos, desenvolvido utilizando .NET 7, ASP.NET Core e Entity Framework. O sistema permite realizar o cadastro, edição, detalhamento e exclusão de processos, além de listar todos os processos cadastrados.
+Este sistema foi desenvolvido utilizando **.NET 7**, **ASP.NET Core** e **Entity Framework**, com o objetivo de facilitar o gerenciamento de processos. Ele permite realizar operações de cadastro, edição, detalhamento e exclusão de processos, além de listar todos os processos cadastrados. O sistema também conta com uma integração para consulta de municípios por meio da **API do IBGE**.
 
 ## Funcionalidades
 
-- **Listar Processos**: Exibe todos os processos cadastrados em uma tabela.
-- **Editar Processos**: Permite editar os dados de um processo já existente.
-- **Detalhar Processos**: Mostra os detalhes completos de um processo específico.
-- **Excluir Processos**: Remove um processo do sistema.
-- **Consulta de Municípios**: Integração com a API do IBGE para listar municípios de acordo com o estado selecionado.
+- **Listar Processos**: Exibe uma lista de todos os processos cadastrados em uma tabela.
+- **Editar Processos**: Permite modificar os dados de um processo existente.
+- **Detalhar Processos**: Apresenta os detalhes completos de um processo específico.
+- **Excluir Processos**: Remove um processo do sistema de forma permanente.
+- **Consulta de Municípios**: Integração com a API do IBGE para listar os municípios com base no estado (UF) selecionado.
 
 ## Tecnologias Utilizadas
 
 - **.NET 7**
 - **ASP.NET Core**
 - **Entity Framework**
-- **API do IBGE**: Utilizada para consulta de municípios com base no estado (UF).
+- **SQL Server**
+- **API do IBGE**: Usada para consulta de municípios com base no estado selecionado.
 
 ## Configuração do Banco de Dados
 
-Para a criação do banco de dados e das tabelas, foi utilizada a ferramenta de Migrations do Entity Framework. O projeto já inclui a migration responsável pela criação da estrutura do banco de dados.
+O projeto utiliza o **Entity Framework** para gerenciar o banco de dados. As migrations já estão configuradas para criar as tabelas necessárias no banco.
 
-# Setup do Projeto de Gerenciamento de Processos
+### Passos para Configurar e Executar a Migration
 
-Este é um sistema de gerenciamento de processos desenvolvido em ASP.NET Core MVC, utilizando .NET 7 e Entity Framework. O sistema permite listar, editar, detalhar e excluir processos cadastrados. Para a consulta de municípios, utilizamos a API do IBGE.
+1. **Configuração da String de Conexão**:
+
+   No arquivo `appsettings.json`, configure a string de conexão com seu banco de dados SQL Server na seção `ConnectionStrings`:
+
+   ```json
+   "ConnectionStrings": {
+       "DefaultConnection": "Server=SEU_SERVIDOR;Database=NOME_DO_BANCO;Trusted_Connection=True;"
+   }
 
 ## Pré-requisitos
 
@@ -33,11 +41,4 @@ Antes de começar, certifique-se de ter os seguintes itens instalados em seu sis
 - [Visual Studio 2022](https://visualstudio.microsoft.com/) (com suporte para ASP.NET)
 - [SQL Server Express](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (ou outro gerenciador de banco de dados de sua escolha)
 
-## Clonando o Repositório
 
-1. Abra o terminal ou o prompt de comando.
-2. Clone o repositório usando o comando:
-
-   ```bash
-   git clone https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git
-   cd NOME_DO_REPOSITORIO
